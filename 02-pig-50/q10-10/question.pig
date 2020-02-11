@@ -14,7 +14,6 @@
 -- 
 -- Escriba el resultado a la carpeta `output` del directorio actual.
 -- 
-fs -rm -f -r output;
 --
 u = LOAD 'data.csv' USING PigStorage(',') 
     AS (id:int, 
@@ -26,3 +25,12 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
+
+largo = FOREACH data GENERATE l_name, SIZE(l_name) AS largo;
+unicos = DISTINCT largo;
+ordena = ORDER unicos BY largo DESC, l_name;
+primeros = LIMIT ordena 5;
+
+STORE primeros INTO 'output' USING PigStorage(',');

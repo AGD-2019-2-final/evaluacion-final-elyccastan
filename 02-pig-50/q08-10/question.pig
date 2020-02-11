@@ -14,3 +14,10 @@ fs -rm -f -r output;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data = LOAD 'data.tsv'
+    AS (f1:CHARARRAY, f2:BAG{t: TUPLE()}, f3:MAP[]);
+
+primer = FOREACH data GENERATE FLATTEN(f2) AS ff2, FLATTEN(f3) AS ff3;
+agrupa = GROUP primer BY (ff2, ff3);
+cuenta = FOREACH agrupa GENERATE group, COUNT(primer);
+STORE cuenta INTO 'output';

@@ -40,3 +40,16 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS unicos;
+
+CREATE TABLE unicos
+AS
+SELECT DISTINCT letra
+FROM (
+   SELECT explode(c5) AS letra
+   FROM tbl0
+    ) t0
+ORDER BY letra;
+    
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+SELECT * FROM unicos;

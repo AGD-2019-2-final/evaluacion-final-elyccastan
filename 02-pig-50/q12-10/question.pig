@@ -33,3 +33,11 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
+
+apell_letra = FOREACH data GENERATE l_name, SUBSTRING(l_name,0,1) as letra;
+fil = FILTER apell_letra by letra IN ('D','E','F','G','H','I','J','K');
+fil_ape = FOREACH fil GENERATE $0;
+
+STORE fil_ape INTO 'output';

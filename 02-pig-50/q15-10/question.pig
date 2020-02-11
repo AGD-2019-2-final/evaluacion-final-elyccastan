@@ -27,3 +27,11 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
+
+nombre_color_letra = FOREACH data GENERATE name, color, SUBSTRING(name,0,1) as letra;
+filtro = FILTER nombre_color_letra by (color == 'blue' AND letra == 'Z');
+fil_col = FOREACH filtro GENERATE $0, $1;
+
+STORE fil_col INTO 'output';

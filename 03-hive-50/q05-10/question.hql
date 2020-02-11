@@ -39,4 +39,23 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE IF EXISTS veces;
 
+CREATE TABLE veces
+AS
+SELECT anio, 
+       letra, 
+       COUNT(letra)
+FROM (
+      SELECT YEAR(c4) AS anio,
+             letra
+      FROM   tbl0
+      LATERAL VIEW explode(c5) tbl0 AS letra
+     ) t0
+
+GROUP BY anio, letra
+ORDER BY anio, letra;
+    
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM veces;

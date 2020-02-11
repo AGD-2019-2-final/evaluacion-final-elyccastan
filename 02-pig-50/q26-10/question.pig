@@ -27,3 +27,11 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
+
+p_letra = FOREACH data GENERATE name, SUBSTRING(name, 0, 1) AS letra;
+mayor_m = FILTER p_letra by letra >= 'M';
+nombre_mayor_m = FOREACH mayor_m GENERATE name;
+
+STORE nombre_mayor_m INTO 'output';

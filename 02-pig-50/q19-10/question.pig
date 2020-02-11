@@ -28,3 +28,10 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --        
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
+
+nombre_color = FOREACH data GENERATE name, color;
+bes = FILTER nombre_color by color MATCHES '^b.*';
+
+STORE bes INTO 'output' USING PigStorage(',');

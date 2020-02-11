@@ -39,5 +39,23 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE IF EXISTS mayus;
 
+CREATE TABLE mayus
+AS
+SELECT l_mayus
+FROM (
+      SELECT c1,
+             collect_list(UPPER(letra)) AS l_mayus
+      FROM   tbl0
+      LATERAL VIEW explode(c5) tbl0 AS letra
+      GROUP BY c1
+      ) t0
+
+;
+    
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+SELECT * FROM mayus;
 

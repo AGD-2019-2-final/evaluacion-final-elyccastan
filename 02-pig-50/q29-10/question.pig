@@ -40,3 +40,25 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
+
+anio = FOREACH data GENERATE fecha, ToDate(fecha,'yyyy-MM-dd') AS fecha_1;
+mes2 = FOREACH anio GENERATE fecha, fecha_1, GetMonth(fecha_1) AS Mes;
+mes3 = FOREACH mes2 GENERATE fecha, (
+case Mes
+when 1 then 'ene'
+when 2 then 'feb'
+when 3 then 'mar'
+when 4 then 'abr'
+when 5 then 'may'
+when 6 then 'jun'
+when 7 then 'jul'
+when 8 then 'ago'
+when 9 then 'sep'
+when 10 then 'oct'
+when 11 then 'nov'
+else 'dic' END
+) AS nombre_mes, ToString(fecha_1, 'MM') AS Mes1, ToString(fecha_1, 'M') AS Mes2;
+
+STORE mes3 INTO 'output' USING PigStorage(',');

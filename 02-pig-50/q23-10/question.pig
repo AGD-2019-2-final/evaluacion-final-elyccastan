@@ -29,3 +29,10 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
+
+nombre_color = FOREACH data GENERATE name, color;
+vocal_termina = FILTER nombre_color by color MATCHES '.*[aeiou]';
+
+STORE vocal_termina INTO 'output' USING PigStorage(',');

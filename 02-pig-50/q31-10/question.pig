@@ -20,3 +20,11 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
+
+anio = FOREACH data GENERATE Id, SUBSTRING(fecha,0,4) AS ani;
+agrupa = GROUP anio BY ani;
+cuenta = FOREACH agrupa GENERATE group, COUNT(anio.Id);
+
+STORE cuenta INTO 'output' USING PigStorage(',');

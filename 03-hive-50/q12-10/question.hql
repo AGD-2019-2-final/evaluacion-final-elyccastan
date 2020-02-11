@@ -26,5 +26,26 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE IF EXISTS cantidad_claves;
 
+CREATE TABLE cantidad_claves
+AS
+
+SELECT letra,
+       key,
+       COUNT (key)
+
+FROM (SELECT letra,
+             key      
+      FROM  t0
+      LATERAL VIEW explode(c2) t0 AS letra
+      LATERAL VIEW explode(c3) t0 AS key, val
+      ) t1 
+
+GROUP BY letra, key
+;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM cantidad_claves;
 

@@ -40,4 +40,29 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
 
+anio = FOREACH data GENERATE fecha, ToDate(fecha,'yyyy-MM-dd') AS fecha_1;
+dia = FOREACH anio GENERATE fecha, ToString(fecha_1, 'dd') AS dia, GetDay(fecha_1) AS dia1, ToString(fecha_1, 'e') AS dia2;
+nombre_dia = FOREACH dia GENERATE fecha, dia, dia1, (
+case dia2
+WHEN '1' THEN 'lun'
+WHEN '2' THEN 'mar'
+WHEN '3' THEN 'mie'
+WHEN '4' THEN 'jue'
+WHEN '5' THEN 'vie'
+WHEN '6' THEN 'sab'
+ELSE 'dom'
+END),
+(CASE dia2
+WHEN '1' THEN 'lunes'
+WHEN '2' THEN 'martes'
+WHEN '3' THEN 'miercoles'
+WHEN '4' THEN 'jueves'
+WHEN '5' THEN 'viernes'
+WHEN '6' THEN 'sabado'
+ELSE 'domingo'
+END);
+
+STORE nombre_dia INTO 'output' USING PigStorage(',');

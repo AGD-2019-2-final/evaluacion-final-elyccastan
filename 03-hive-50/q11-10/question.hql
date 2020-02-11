@@ -22,5 +22,18 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE IF EXISTS cantidad_elementos;
 
+CREATE TABLE cantidad_elementos
+AS
+
+SELECT c1,
+       SIZE(c2) AS letras,
+       SIZE(c3) AS Claves
+FROM t0
+;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM cantidad_elementos;
 

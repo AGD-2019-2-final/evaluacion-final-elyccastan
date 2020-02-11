@@ -39,5 +39,18 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE IF EXISTS letra_num;
 
+CREATE TABLE letra_num
+AS
+
+SELECT c2, collect_list(c1)
+FROM tbl0
+GROUP BY c2
+;
+    
+INSERT OVERWRITE LOCAL DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+SELECT * FROM letra_num;
 

@@ -30,3 +30,9 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+data = LOAD 'data.csv' USING PigStorage(',')
+    AS (Id:INT, name:CHARARRAY, l_name:CHARARRAY, fecha:CHARARRAY, color:CHARARRAY, num:INT);
+
+anio = FOREACH data GENERATE SUBSTRING(fecha, 0, 4), SUBSTRING(fecha, 2, 4);
+
+STORE anio INTO 'output' USING PigStorage(',');
